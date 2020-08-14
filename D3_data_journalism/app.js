@@ -1,4 +1,3 @@
-// @TODO: YOUR CODE HERE!
 var svgWidth = 960;
 var svgHeight = 500;
 
@@ -12,7 +11,7 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-// Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
+
 var svg = d3.select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
@@ -21,11 +20,9 @@ var svg = d3.select("#scatter")
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-// Import Data
 d3.csv("data.csv").then(function(Data) {
   console.log(Data)
-    // Step 1: Parse Data/Cast as numbers
-    // ==============================
+
     Data.forEach(function(data) {
       data.age = +data.age;
       data.smokes = +data.smokes;
@@ -33,8 +30,6 @@ d3.csv("data.csv").then(function(Data) {
     });
 
 
-    // Step 2: Create scale functions
-    // ==============================
     var xLinearScale = d3.scaleLinear()
       .domain([30, d3.max(Data, d => d.age)])
       .range([0, width]);
@@ -43,13 +38,11 @@ d3.csv("data.csv").then(function(Data) {
       .domain([8, d3.max(Data, d => d.smokes)])
       .range([height, 0]);
 
-    // Step 3: Create axis functions
-    // ==============================
+
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
-    // Step 4: Append Axes to the chart
-    // ==============================
+
     chartGroup.append("g")
       .attr("transform", `translate(0, ${height})`)
       .call(bottomAxis);
@@ -57,8 +50,7 @@ d3.csv("data.csv").then(function(Data) {
     chartGroup.append("g")
       .call(leftAxis);
 
-    // Step 5: Create Circles
-    // ==============================
+//circle
     var circlesGroup = chartGroup.selectAll("circle")
     .data(Data)
     .enter()
@@ -69,6 +61,7 @@ d3.csv("data.csv").then(function(Data) {
     .attr("fill", "#98ceeb")
     // .attr("opacity", ".5");
 
+    //circle text
     var text = chartGroup.selectAll()
     .data(Data)
     .enter()
@@ -80,9 +73,7 @@ d3.csv("data.csv").then(function(Data) {
     .attr("font-size", 8)
     .style("text-anchor", "middle");
 
-console.log(Data.abbr);
-
-    // Create axes labels
+    //y axis
     chartGroup.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left + 40)
@@ -93,6 +84,7 @@ console.log(Data.abbr);
       .attr("font-weight", 900)
       .attr("font-size", 20);
 
+      //x axis 
     chartGroup.append("text")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "axisText")
@@ -103,6 +95,7 @@ console.log(Data.abbr);
     console.log(error);
   });
 
+  //tooltip
   var toolTip = d3.tip()
   .attr("class", "tooltip")
   .offset([80, -60])
@@ -110,10 +103,9 @@ console.log(Data.abbr);
     return (`${d.state}<br>Age (%): ${d.age}<br>Smokes(%): ${d.smokes}`);
   });
 
-// Create tooltip in the chart
-// ==============================
 chartGroup.call(toolTip);
 
+//click
 chartGroup.on("click", function(data) {
   toolTip.show(data, this);
 })
